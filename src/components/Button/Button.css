@@ -1,0 +1,25 @@
+.button {
+  border-radius: 6px;
+  padding: 8px 30px;
+  gap: 8px;
+  text-align: center;
+  font-family: Source Sans Pro;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 26px;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background 0.25s;
+  background: #312eb5;
+}
+.button:hover {
+  background-color: #646cff;
+}
+.button:focus,
+.button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+.accent {
+}
