@@ -31,3 +31,11 @@
     border: 1px solid red;
     background: rgb(102, 26, 26);
 }
+
+.delete{
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    
+}

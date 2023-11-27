@@ -8,7 +8,7 @@ import { UserContext } from '../../context/user.context.jsx';
 
 
 
-function JournalForm({onSubmit}) {
+function JournalForm({onSubmit, data, onDelete}) {
 
 	const [formState, dispatchForm] = useReducer(formReducer, INITIAL_STATE);
 	const {isValid, isFormReadyToSubmit, values} = formState;
@@ -32,6 +32,14 @@ function JournalForm({onSubmit}) {
 	};
 
 	useEffect(()=> {
+		if(!data){
+			dispatchForm({type: 'CLEAR'});
+			dispatchForm({type: 'SET_VALUE', payload: {userId}});
+		}
+		dispatchForm({type: 'SET_VALUE', payload: {...data}});
+	}, [data]);
+
+	useEffect(()=> {
 		let timerId;
 		if(!isValid.title|| !isValid.post || !isValid.date){
 			focusError(isValid);
@@ -48,8 +56,9 @@ function JournalForm({onSubmit}) {
 		if(isFormReadyToSubmit){
 			onSubmit(values);
 			dispatchForm({type: 'CLEAR'});
+			dispatchForm({type: 'SET_VALUE', payload: {userId}});
 		}
-	}, [isFormReadyToSubmit, values, onSubmit]);
+	}, [isFormReadyToSubmit, values, onSubmit, userId]);
 
 	useEffect(()=> {
 		dispatchForm({type: 'SET_VALUE', payload: {userId}});
@@ -64,6 +73,10 @@ function JournalForm({onSubmit}) {
 		dispatchForm({type: 'SUBMIT'});
 	}; 
     
+	const deleteJournalItem = () => {
+		onDelete(data.id);
+		dispatchForm({type: 'CLEAR'});
+	};
 
 	/* 	return (
 		<form className='journal-form' onSubmit={addJournalItem}>
@@ -77,15 +90,19 @@ function JournalForm({onSubmit}) {
 
 	return (
 		<form className={styles['journal-form']} onSubmit={addJournalItem}>
-			<div>
-				<Input type="text" onChange={onChange} isValid={isValid.title} ref={titleRef} value={values.title} name="title" appearance="title" />
+			<div className={styles['form-row']}>
+				<Input appearance="title" type="text" onChange={onChange} isValid={isValid.title} ref={titleRef} value={values.title} name="title" />
+				{data?.id && <button className={styles['delete']} type='button' onClick={deleteJournalItem}>
+					<img src="/basket.svg" alt="delete" />
+				</button>}
+
 			</div>
 			<div className={styles['form-row']}>
 				<label htmlFor="date"  className={styles['form-label']}>
 					<img src="/date.svg" alt="date" />
 					<span>Дата</span>
 				</label>
-				<Input type="date" value={values.date} isValid={isValid.date} ref={dateRef} onChange={onChange} name="date" id="date"/>
+				<Input type="date" value={values.date ? new Date(values.date).toISOString().slice(0,10) : ''} isValid={isValid.date} ref={dateRef} onChange={onChange} name="date" id="date"/>
 			</div>
 			<div className={styles['form-row']}>
 				<label htmlFor="tag" className={styles['form-label']}>
